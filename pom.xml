@@ -38,7 +38,7 @@
 
 	<distributionManagement>
 		<repository>
-			<id>bintray-bckfnn-maven-yoke-accept-language</id>
+			<id>bintray-bckfnn-maven</id>
 			<name>bckfnn-maven-yoke-accept-language</name>
 			<url>https://api.bintray.com/maven/bckfnn/maven/yoke-accept-language</url>
 		</repository>
