@@ -3,7 +3,7 @@
 
 	<groupId>io.github.bckfnn</groupId>
 	<artifactId>yoke-accept-language</artifactId>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 
 	<name>yoke-accept-language</name>
 	<description>
@@ -22,7 +22,7 @@
 		<connection>scm:git:https://github.com/bckfnn/yoke-accept-language.git</connection>
 		<developerConnection>scm:git:https://github.com/bckfnn/yoke-accept-language.git</developerConnection>
 		<url>https://github.com/bckfnn/yoke-accept-language.git</url>
-	  <tag>yoke-accept-language-1.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 	<developers>
 		<developer>
