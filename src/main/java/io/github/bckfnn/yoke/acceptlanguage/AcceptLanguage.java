@@ -18,6 +18,9 @@ import com.jetdrone.vertx.yoke.middleware.YokeRequest;
  */
 public class AcceptLanguage extends Middleware {
     private LruCache cache = null;
+    private String localesName = "locales";
+    private String localeName = "locale";
+    private Locale defaultLocale = Locale.ENGLISH;
 
     /**
      * Constructor.
@@ -27,6 +30,38 @@ public class AcceptLanguage extends Middleware {
         if (cache) {
             this.cache = new LruCache(1024);
         }
+    }
+
+    /**
+     * Set the name of the request variable where the list of locales will be stored.
+     * Default to <code>"locales"</code>. 
+     * @param localesName name of the request variable.
+     * @return this, for chaining.
+     */
+    public AcceptLanguage localesName(String localesName) {
+        this.localesName = localesName;
+        return this;
+    }
+
+    /**
+     * Set the name of the request variable where the highest priority locale will be stored.
+     * Default to <code>"locale"</code>. 
+     * @param localeName name of the request variable.
+     * @return this, for chaining.
+     */
+    public AcceptLanguage localeName(String localeName) {
+        this.localeName = localeName;
+        return this;
+    }
+
+    /**
+     * Set the default locale to assign "locale" if no Accept-Locale header is available.
+     * @param defaultLocale the default Locale ti use.
+     * @return this, for chaining.
+     */
+    public AcceptLanguage defaultLocale(Locale defaultLocale) {
+        this.defaultLocale = defaultLocale;
+        return this;
     }
 
     @Override
@@ -45,26 +80,31 @@ public class AcceptLanguage extends Middleware {
             locales = getLocales(languages);
         }
 
-        request.put("locales", locales);
+        request.put(localesName, locales);
         if (locales.size() > 0) {
-            request.put("locale", locales.get(0));
+            request.put(localeName, locales.get(0));
         } else {
-            request.put("locale", Locale.ENGLISH);
+            request.put(localeName, defaultLocale);
         }
         next.handle(null);
     }
 
-    private List<Locale> getLocales(String languages) {
+    /**
+     * Parse the Accept-Language HTTP header.
+     * @param languages the header value.
+     * @return sorted list of Locale.
+     */
+    public static List<Locale> getLocales(String languages) {
         List<LangQ> list = new ArrayList<>();
 
         if (languages == null) {
             return new ArrayList<Locale>();
         }
-        
-        for (String str : languages.split(",")) {
-           String[] arr = str.trim().replace("-", "_").split(";");
 
-           // Parse the q-value
+        for (String str : languages.split(",")) {
+            String[] arr = str.trim().replace("-", "_").split(";");
+
+            // Parse the q-value
             Double q = 1.0D;
             for (String s : arr) {
                 s = s.trim();
@@ -102,9 +142,9 @@ public class AcceptLanguage extends Middleware {
             // Parse the locale
             String[] l = lang.split("_");
             switch(l.length) {
-                case 2: return new Locale(l[0], l[1]);
-                case 3: return new Locale(l[0], l[1], l[2]);
-                default: return new Locale(l[0]);
+            case 2: return new Locale(l[0], l[1]);
+            case 3: return new Locale(l[0], l[1], l[2]);
+            default: return new Locale(l[0]);
             }
 
         }
